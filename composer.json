@@ -1,0 +1,37 @@
+{
+  "name": "richardhj/contao-knp-menu",
+  "description": "Wrapper extension for knp-menu.",
+  "type": "contao-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Richard Henkenjohann",
+      "email": "richardhenkenjohann@googlemail.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/richardhj/contao-knp-menu/issues",
+    "source": "https://github.com/richardhj/contao-knp-menu"
+  },
+  "require": {
+    "php": "^7.4",
+   
+    "contao/core-bundle": "^4.9",
+    "knp-menu/symfony": "^2.2",
+
+    "symfony/config": "^4.4",
+    "symfony/http-kernel": "^4.4"
+  },
+  "require-dev": {
+    "contao/manager-plugin": "^2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Richardhj\\ContaoKnpMenuBundle\\": "src/"
+    }
+  },
+  "extra": {
+    "contao-manager-plugin": "Richardhj\\ContaoKnpMenuBundle\\ContaoManager\\Plugin"
+  }
+}
