@@ -38,6 +38,7 @@ class NavigationModuleProvider implements MenuProviderInterface
     {
         $moduleAdapter = $this->framework->getAdapter(ModuleModel::class);
 
+        /** @var ModuleModel $module */
         if (null === $module = $moduleAdapter->findBy('menuAlias', $name)) {
             throw new \InvalidArgumentException(sprintf('The menu "%s" is not defined.', $name));
         }
@@ -66,7 +67,7 @@ class NavigationModuleProvider implements MenuProviderInterface
             $host = $rootPage->domain;
         }
 
-        $this->builder->getMenu($menu, $trail[$level], $host ?? null);
+        return $this->builder->getMenu($menu, (int) $trail[$level], 1, $host ?? null, $module->row());
     }
 
     public function has($name, array $options = [])

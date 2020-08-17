@@ -43,7 +43,7 @@ class MenuBuilder
         $this->factory      = $factory;
         $this->requestStack = $requestStack;
         $this->framework    = $framework;
-        $this->dispatcher = $dispatcher;
+        $this->dispatcher   = $dispatcher;
     }
 
     public function getMenu(ItemInterface $root, int $pid, $level = 1, $host = null, array $options = []): ItemInterface
@@ -73,8 +73,8 @@ class MenuBuilder
 
             $_groups = StringUtil::deserialize($page->groups, true);
 
-            if (!$options['showProtected'] || ($page->protected && !\count(array_intersect($_groups, $groups)))) {
-                $item->setDisplay(false);
+            if (!$options['showProtected'] && ($page->protected && !\count(array_intersect($_groups, $groups)))) {
+                continue;
             }
 
             // Check whether there will be subpages
@@ -144,6 +144,8 @@ class MenuBuilder
             && ($requestPage->id === $page->id || ('forward' === $page->type && $requestPage->id === $page->jumpTo))) {
             $extra['isActive'] = true;
             $extra['isTrail']  = false;
+
+            $item->setCurrent(true);
         } else {
             $extra['isActive'] = false;
             $extra['isTrail']  = $trail;
