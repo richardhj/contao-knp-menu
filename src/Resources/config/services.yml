@@ -1,2 +1,8 @@
 services:
-  
+  Richardhj\ContaoKnpMenuBundle\Menu\NavigationModuleProvider:
+    arguments: ['@Knp\Menu\FactoryInterface', '@Richardhj\ContaoKnpMenuBundle\Menu\MenuBuilder',  '@contao.framework']
+    tags:
+      - { name: knp_menu.provider }
+
+  Richardhj\ContaoKnpMenuBundle\Menu\MenuBuilder:
+    arguments: ['@Knp\Menu\FactoryInterface', '@request_stack', '@contao.framework', '@event_dispatcher']
