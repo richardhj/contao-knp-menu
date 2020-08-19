@@ -21,6 +21,6 @@ foreach (['navigation', 'customnav'] as $item) {
 $GLOBALS['TL_DCA']['tl_module']['fields']['menuAlias'] = [
     'exclude'   => true,
     'inputType' => 'text',
-    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50', 'unique' => true],
     'sql'       => "varchar(255) NOT NULL default ''",
 ];
