@@ -85,7 +85,7 @@ class MenuBuilder
                 if (!$options['showLevel']
                     || $options['showLevel'] >= $level
                     || (!$options['hardLimit']
-                        && ($requestPage->id === $page->id || \in_array($requestPage->id, $childRecords, true)))) {
+                        && (null !== $requestPage && $requestPage->id === $page->id || \in_array($requestPage->id, $childRecords, true)))) {
                     $item->setDisplayChildren(false);
                 }
             }
@@ -129,10 +129,10 @@ class MenuBuilder
         return $root;
     }
 
-    private function populateMenuItem(MenuItem $item, PageModel $requestPage, PageModel $page, $href): MenuItem
+    private function populateMenuItem(MenuItem $item, ?PageModel $requestPage, PageModel $page, $href): MenuItem
     {
         $extra = $page->row();
-        $trail = \in_array($page->id, $requestPage->trail, true);
+        $trail = null !== $requestPage ? \in_array($page->id, $requestPage->trail, true) : false;
 
         $item->setUri($href);
 
@@ -141,7 +141,7 @@ class MenuBuilder
 
         // Active page
         if ($href === $path
-            && ($requestPage->id === $page->id || ('forward' === $page->type && $requestPage->id === $page->jumpTo))) {
+            && (null !== $requestPage && $requestPage->id === $page->id || ('forward' === $page->type && $requestPage->id === $page->jumpTo))) {
             $extra['isActive'] = true;
             $extra['isTrail']  = false;
 
