@@ -30,7 +30,7 @@ You can retrieve a module by its alias:
 You can also override some settings in the navigation module:
 
 ```twig
-{% set menu = knp_menu_get('main_navigation', { 'showHidden': true, 'showProtected': true }) %}
+{% set menu = knp_menu_get('main_navigation', [], { 'showHidden': true, 'showProtected': true }) %}
 ```
 
 
