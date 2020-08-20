@@ -21,10 +21,16 @@ Create a navigation module as you normally do and define a menu alias.
 
 ### Retrieve a navigation module
 
-You can retrieve a module by its alias.
+You can retrieve a module by its alias:
 
 ```twig
 {% set menu = knp_menu_get('main_navigation') %}
+```
+
+You can also override some settings in the navigation module:
+
+```twig
+{% set menu = knp_menu_get('main_navigation', { 'showHidden': true, 'showProtected': true }) %}
 ```
 
 
