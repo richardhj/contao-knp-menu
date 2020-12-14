@@ -19,6 +19,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 use Knp\Menu\Provider\MenuProviderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -37,7 +38,7 @@ class NavigationModuleProvider implements MenuProviderInterface
         $this->requestStack = $requestStack;
     }
 
-    public function get($name, array $options = [])
+    public function get($name, array $options = []): ItemInterface
     {
         $request       = $this->requestStack->getCurrentRequest();
         $moduleAdapter = $this->framework->getAdapter(ModuleModel::class);
@@ -76,7 +77,7 @@ class NavigationModuleProvider implements MenuProviderInterface
         return $this->builder->getMenu($menu, (int) $trail[$level], 1, $host ?? null, $options);
     }
 
-    public function has($name, array $options = [])
+    public function has($name, array $options = []): bool
     {
         $adapter = $this->framework->getAdapter(ModuleModel::class);
         $module  = $adapter->findBy('menuAlias', $name);
