@@ -80,7 +80,7 @@ class MenuBuilder
 
             // Check whether there will be subpages
             if ($page->subpages > 0) {
-                $this->getMenu($item, $page->id, $level++, $host);
+                $this->getMenu($item, (int) $page->id, $level++, $host);
 
                 $childRecords = Database::getInstance()->getChildRecords($page->id, 'tl_page');
                 if (!$options['showLevel']
