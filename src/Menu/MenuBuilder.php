@@ -20,6 +20,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\Environment;
 use Contao\FrontendUser;
+use Contao\Model\Collection;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Knp\Menu\FactoryInterface;
@@ -59,11 +60,7 @@ class MenuBuilder
             $groups = $user->groups;
         }
 
-        $pages = ('customnav' === $options['type']) ?
-            PageModel::findMultipleByIds(StringUtil::deserialize($options['pages'], true)) :
-            PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $options['showHidden']);
-
-        if (null === $pages) {
+        if (null === ($pages = $this->getPages($pid, $options))) {
             return $root;
         }
 
@@ -131,6 +128,17 @@ class MenuBuilder
         $this->dispatcher->dispatch($menuEvent);
 
         return $root;
+    }
+
+    private function getPages(int $pid, array $options): ?Collection
+    {
+        if ('customnav' !== $options['type']) {
+            return PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $options['showHidden']);
+        }
+
+        $ids = StringUtil::deserialize($options['pages'], true);
+
+        return PageModel::findPublishedRegularWithoutGuestsByIds($ids, ['includeRoot'=>true]);
     }
 
     private function populateMenuItem(MenuItem $item, ?PageModel $requestPage, PageModel $page, $href): MenuItem
