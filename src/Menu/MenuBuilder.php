@@ -59,7 +59,10 @@ class MenuBuilder
             $groups = $user->groups;
         }
 
-        $pages = PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $options['showHidden']);
+        $pages = ('customnav' === $options['type']) ?
+            PageModel::findMultipleByIds(StringUtil::deserialize($options['pages'], true)) :
+            PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $options['showHidden']);
+
         if (null === $pages) {
             return $root;
         }
