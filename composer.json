@@ -15,7 +15,7 @@
     "source": "https://github.com/richardhj/contao-knp-menu"
   },
   "require": {
-    "php": "^7.4",
+    "php": "^7.4 || ^8.0",
    
     "contao/core-bundle": "^4.9",
     "knplabs/knp-menu-bundle": "^2.2. || ^3.0",
