@@ -50,6 +50,10 @@ class MenuBuilder
 
     public function getMenu(ItemInterface $root, int $pid, $level = 1, $host = null, array $options = []): ItemInterface
     {
+        if (empty($options) || null === ($pages = $this->getPages($pid, $options))) {
+            return $root;
+        }
+
         $groups      = [];
         $request     = $this->requestStack->getCurrentRequest();
         $requestPage = $request->attributes->get('pageModel');
@@ -58,10 +62,6 @@ class MenuBuilder
         $user = $this->framework->createInstance(FrontendUser::class);
         if ($user->id) {
             $groups = $user->groups;
-        }
-
-        if (null === ($pages = $this->getPages($pid, $options))) {
-            return $root;
         }
 
         foreach ($pages as $page) {
@@ -80,7 +80,7 @@ class MenuBuilder
 
             // Check whether there will be subpages
             if ($page->subpages > 0) {
-                $this->getMenu($item, (int) $page->id, $level++, $host);
+                $this->getMenu($item, (int) $page->id, $level++, $host, $options);
 
                 $childRecords = Database::getInstance()->getChildRecords($page->id, 'tl_page');
                 if (!$options['showLevel']
