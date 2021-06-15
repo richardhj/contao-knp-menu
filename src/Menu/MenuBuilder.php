@@ -5,11 +5,11 @@ declare(strict_types=1);
 /*
  * This file is part of richardhj/contao-knp-menu.
  *
- * Copyright (c) 2020-2020 Richard Henkenjohann
+ * Copyright (c) 2020-2021 Richard Henkenjohann
  *
  * @package   richardhj/contao-knp-menu
  * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright 2020-2020 Richard Henkenjohann
+ * @copyright 2020-2021 Richard Henkenjohann
  * @license   MIT
  */
 
@@ -182,6 +182,18 @@ class MenuBuilder
         // Set the rel attribute
         if (!empty($arrRel)) {
             $item->setLinkAttribute('rel', implode(' ', $arrRel));
+        }
+
+        if ($title = $page->pageTitle ?: $page->title) {
+            $item->setLinkAttribute('title', $title);
+        }
+
+        if ($page->accesskey) {
+            $item->setLinkAttribute('accesskey', $page->accesskey);
+        }
+
+        if ($page->tabindex) {
+            $item->setLinkAttribute('tabindex', $page->tabindex);
         }
 
         foreach ($extra as $k => $v) {
