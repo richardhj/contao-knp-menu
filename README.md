@@ -66,36 +66,6 @@ a base template. This is an example of retrieving and parsing a simple navigatio
 </div>
 ```
 
-My tip: works best if you use [m-vo/contao-twig](https://github.com/m-vo/contao-twig/) to replace the html templates
-with twig templates. You can use a `fe_page.html.twig` template and extract components, e.g. header and navigation like: 
-
-```twig
-{% block header %}
-    {% include 'Layout/header.html.twig' %}
-{% endblock %}
-```
-
-### Modify navigation
-
-Modify an existing navigation:
-
-```php
-class MenuListener
-{
-    public function __invoke(\Contao\CoreBundle\Event\MenuEvent $event): void
-    {
-        $name = $event->getTree()->getName();
-
-        if ('mainMenu' !== $name) {
-            return;
-        }
-
-        // Do stuff.
-    }
-}
-```
-
 
 [ico-version]: https://img.shields.io/packagist/v/richardhj/contao-knp-menu.svg?style=flat-square
-
 [link-packagist]: https://packagist.org/packages/richardhj/contao-knp-menu
