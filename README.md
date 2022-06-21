@@ -1,8 +1,10 @@
-# contao-knp-menu
+# Contao KnpMenu
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 
 Provides Contao navigation modules as instances of [KnpMenu](https://github.com/KnpLabs/KnpMenuBundle).
+
+This extension is stable and supported from Contao >=4.9 and will be integrated into the Contao Core at some time, see https://github.com/contao/contao/pull/3838.
 
 
 ## Install
