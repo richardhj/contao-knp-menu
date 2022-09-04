@@ -15,13 +15,13 @@
     "source": "https://github.com/richardhj/contao-knp-menu"
   },
   "require": {
-    "php": "^7.4 || ^8.0",
+    "php": ">=7.4",
    
-    "contao/core-bundle": "^4.9",
+    "contao/core-bundle": "^4.9 || ^5.0",
     "knplabs/knp-menu-bundle": "^2.2. || ^3.0",
 
-    "symfony/config": "^4.4 || ^5.0",
-    "symfony/http-kernel": "^4.4 || ^5.0"
+    "symfony/config": "^4.4 || ^5.0 || ^6.0",
+    "symfony/http-kernel": "^4.4 || ^5.0 || ^6.0"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.7"
@@ -33,5 +33,11 @@
   },
   "extra": {
     "contao-manager-plugin": "Richardhj\\ContaoKnpMenuBundle\\ContaoManager\\Plugin"
+  },
+  "config": {
+    "allow-plugins": {
+      "contao-components/installer": true,
+      "contao/manager-plugin": true
+    }
   }
 }
