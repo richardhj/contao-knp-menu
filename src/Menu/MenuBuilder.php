@@ -60,7 +60,7 @@ class MenuBuilder
         $request     = $this->requestStack->getCurrentRequest();
         $requestPage = $request->attributes->get('pageModel');
 
-        if (is_int($requestPage)) {
+        if (is_numeric($requestPage)) {
             $requestPage = $pageAdapter->findByPk($requestPage);
         }
 

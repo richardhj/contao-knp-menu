@@ -51,7 +51,7 @@ class NavigationModuleProvider implements MenuProviderInterface
 
         $currentPage = null !== $request ? $request->attributes->get('pageModel') : null;
 
-        if (is_int($currentPage)) {
+        if (is_numeric($currentPage)) {
             $currentPage = $pageAdapter->findByPk($currentPage);
         }
 
