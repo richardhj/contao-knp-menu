@@ -42,6 +42,7 @@ class NavigationModuleProvider implements MenuProviderInterface
     {
         $request       = $this->requestStack->getCurrentRequest();
         $moduleAdapter = $this->framework->getAdapter(ModuleModel::class);
+        $pageAdapter   = $this->framework->getAdapter(PageModel::class);
 
         /** @var ModuleModel $module */
         if (null === $module = $moduleAdapter->findBy('menuAlias', $name)) {
@@ -49,6 +50,10 @@ class NavigationModuleProvider implements MenuProviderInterface
         }
 
         $currentPage = null !== $request ? $request->attributes->get('pageModel') : null;
+
+        if (is_int($currentPage)) {
+            $currentPage = $pageAdapter->findByPk($currentPage);
+        }
 
         $menu    = $this->factory->createItem('root');
         $options = array_merge($module->row(), $options);

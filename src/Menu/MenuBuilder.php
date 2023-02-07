@@ -54,9 +54,15 @@ class MenuBuilder
             return $root;
         }
 
+        $pageAdapter   = $this->framework->getAdapter(PageModel::class);
+
         $groups      = [];
         $request     = $this->requestStack->getCurrentRequest();
         $requestPage = $request->attributes->get('pageModel');
+
+        if (is_int($requestPage)) {
+            $requestPage = $pageAdapter->findByPk($requestPage);
+        }
 
         /** @var FrontendUser $user */
         $user = $this->framework->createInstance(FrontendUser::class);
