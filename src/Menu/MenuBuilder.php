@@ -86,15 +86,17 @@ class MenuBuilder
 
             // Check whether there will be subpages
             if ($page->subpages > 0) {
-                $this->getMenu($item, (int) $page->id, $level++, $host, $options);
 
+                $level++;
                 $childRecords = Database::getInstance()->getChildRecords($page->id, 'tl_page');
-                if (!$options['showLevel']
-                    || $options['showLevel'] >= $level
-                    || (!$options['hardLimit']
-                        && ((null !== $requestPage && $requestPage->id === $page->id) || \in_array($requestPage->id, $childRecords, true)))) {
-                    $item->setDisplayChildren(false);
+
+                $item->setDisplayChildren(false);
+                if (!$options['showLevel'] || $options['showLevel'] >= $level || (
+                        !$options['hardLimit'] && ($requestPage->id == $page->id || \in_array($requestPage->id, $childRecords)))) {
+                    $item->setDisplayChildren(true);
                 }
+
+                $this->getMenu($item, (int) $page->id, $level, $host, $options);
             }
 
             switch ($page->type) {
