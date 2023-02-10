@@ -54,9 +54,15 @@ class MenuBuilder
             return $root;
         }
 
+        $pageAdapter   = $this->framework->getAdapter(PageModel::class);
+
         $groups      = [];
         $request     = $this->requestStack->getCurrentRequest();
         $requestPage = $request->attributes->get('pageModel');
+
+        if (is_numeric($requestPage)) {
+            $requestPage = $pageAdapter->findByPk($requestPage);
+        }
 
         /** @var FrontendUser $user */
         $user = $this->framework->createInstance(FrontendUser::class);
@@ -80,15 +86,17 @@ class MenuBuilder
 
             // Check whether there will be subpages
             if ($page->subpages > 0) {
-                $this->getMenu($item, (int) $page->id, $level++, $host, $options);
 
+                $level++;
                 $childRecords = Database::getInstance()->getChildRecords($page->id, 'tl_page');
-                if (!$options['showLevel']
-                    || $options['showLevel'] >= $level
-                    || (!$options['hardLimit']
-                        && ((null !== $requestPage && $requestPage->id === $page->id) || \in_array($requestPage->id, $childRecords, true)))) {
-                    $item->setDisplayChildren(false);
+
+                $item->setDisplayChildren(false);
+                if (!$options['showLevel'] || $options['showLevel'] >= $level || (
+                        !$options['hardLimit'] && ($requestPage->id == $page->id || \in_array($requestPage->id, $childRecords)))) {
+                    $item->setDisplayChildren(true);
                 }
+
+                $this->getMenu($item, (int) $page->id, $level, $host, $options);
             }
 
             switch ($page->type) {
