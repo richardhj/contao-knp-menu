@@ -5,12 +5,9 @@ declare(strict_types=1);
 /*
  * This file is part of richardhj/contao-knp-menu.
  *
- * Copyright (c) 2020-2021 Richard Henkenjohann
+ * (c) Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  *
- * @package   richardhj/contao-knp-menu
- * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright 2020-2021 Richard Henkenjohann
- * @license   MIT
+ * @license MIT
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
@@ -22,8 +19,8 @@ PaletteManipulator::create()
 ;
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['menuAlias'] = [
-    'exclude'   => true,
+    'exclude' => true,
     'inputType' => 'text',
-    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50 clr', 'unique' => true],
-    'sql'       => "varchar(255) NOT NULL default ''",
+    'eval' => ['maxlength' => 255, 'tl_class' => 'w50 clr', 'unique' => true],
+    'sql' => "varchar(255) NOT NULL default ''",
 ];

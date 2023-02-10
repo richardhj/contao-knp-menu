@@ -68,6 +68,14 @@ a base template. This is an example of retrieving and parsing a simple navigatio
 </div>
 ```
 
+## Development notes:
+
+Code style:
+
+```shell
+vendor/bin/ecs check --fix
+```
+
 
 [ico-version]: https://img.shields.io/packagist/v/richardhj/contao-knp-menu.svg?style=flat-square
 [link-packagist]: https://packagist.org/packages/richardhj/contao-knp-menu

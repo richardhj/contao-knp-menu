@@ -24,6 +24,7 @@
     "symfony/http-kernel": "^4.4 || ^5.0 || ^6.0"
   },
   "require-dev": {
+    "contao/easy-coding-standard": "^4.0",
     "contao/manager-plugin": "^2.7"
   },
   "autoload": {
@@ -37,7 +38,9 @@
   "config": {
     "allow-plugins": {
       "contao-components/installer": true,
-      "contao/manager-plugin": true
+      "contao/manager-plugin": true,
+      "php-http/discovery": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   }
 }

@@ -5,12 +5,9 @@ declare(strict_types=1);
 /*
  * This file is part of richardhj/contao-knp-menu.
  *
- * Copyright (c) 2020-2021 Richard Henkenjohann
+ * (c) Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  *
- * @package   richardhj/contao-knp-menu
- * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright 2020-2021 Richard Henkenjohann
- * @license   MIT
+ * @license MIT
  */
 
 namespace Richardhj\ContaoKnpMenuBundle;

@@ -5,12 +5,9 @@ declare(strict_types=1);
 /*
  * This file is part of richardhj/contao-knp-menu.
  *
- * Copyright (c) 2020-2021 Richard Henkenjohann
+ * (c) Richard Henkenjohann <richardhenkenjohann@googlemail.com>
  *
- * @package   richardhj/contao-knp-menu
- * @author    Richard Henkenjohann <richardhenkenjohann@googlemail.com>
- * @copyright 2020-2021 Richard Henkenjohann
- * @license   MIT
+ * @license MIT
  */
 
 namespace Richardhj\ContaoKnpMenuBundle\Menu;
@@ -31,21 +28,17 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MenuBuilder
 {
-    private FactoryInterface         $factory;
-    private RequestStack             $requestStack;
-    private ContaoFramework          $framework;
+    private FactoryInterface $factory;
+    private RequestStack $requestStack;
+    private ContaoFramework $framework;
     private EventDispatcherInterface $dispatcher;
 
-    public function __construct(
-        FactoryInterface $factory,
-        RequestStack $requestStack,
-        ContaoFramework $framework,
-        EventDispatcherInterface $dispatcher
-    ) {
-        $this->factory      = $factory;
+    public function __construct(FactoryInterface $factory, RequestStack $requestStack, ContaoFramework $framework, EventDispatcherInterface $dispatcher)
+    {
+        $this->factory = $factory;
         $this->requestStack = $requestStack;
-        $this->framework    = $framework;
-        $this->dispatcher   = $dispatcher;
+        $this->framework = $framework;
+        $this->dispatcher = $dispatcher;
     }
 
     public function getMenu(ItemInterface $root, int $pid, $level = 1, $host = null, array $options = []): ItemInterface
@@ -54,10 +47,10 @@ class MenuBuilder
             return $root;
         }
 
-        $pageAdapter   = $this->framework->getAdapter(PageModel::class);
+        $pageAdapter = $this->framework->getAdapter(PageModel::class);
 
-        $groups      = [];
-        $request     = $this->requestStack->getCurrentRequest();
+        $groups = [];
+        $request = $this->requestStack->getCurrentRequest();
         $requestPage = $request->attributes->get('pageModel');
 
         if (is_numeric($requestPage)) {
@@ -66,6 +59,7 @@ class MenuBuilder
 
         /** @var FrontendUser $user */
         $user = $this->framework->createInstance(FrontendUser::class);
+
         if ($user->id) {
             $groups = $user->groups;
         }
@@ -86,13 +80,17 @@ class MenuBuilder
 
             // Check whether there will be subpages
             if ($page->subpages > 0) {
-
-                $level++;
+                ++$level;
                 $childRecords = Database::getInstance()->getChildRecords($page->id, 'tl_page');
 
                 $item->setDisplayChildren(false);
-                if (!$options['showLevel'] || $options['showLevel'] >= $level || (
-                        !$options['hardLimit'] && ($requestPage->id == $page->id || \in_array($requestPage->id, $childRecords)))) {
+
+                if (
+                    !$options['showLevel'] || $options['showLevel'] >= $level ||
+                    (
+                        !$options['hardLimit'] && ($requestPage->id === $page->id || \in_array($requestPage->id, $childRecords, true))
+                    )
+                ) {
                     $item->setDisplayChildren(true);
                 }
 
@@ -146,7 +144,7 @@ class MenuBuilder
 
         $ids = StringUtil::deserialize($options['pages'], true);
 
-        return PageModel::findPublishedRegularWithoutGuestsByIds($ids, ['includeRoot'=>true]);
+        return PageModel::findPublishedRegularWithoutGuestsByIds($ids, ['includeRoot' => true]);
     }
 
     private function populateMenuItem(MenuItem $item, ?PageModel $requestPage, PageModel $page, $href): MenuItem
@@ -160,15 +158,17 @@ class MenuBuilder
         $path = current(explode('?', Environment::get('request'), 2));
 
         // Active page
-        if ($href === $path
-            && ((null !== $requestPage && $requestPage->id === $page->id) || ('forward' === $page->type && $requestPage->id === $page->jumpTo))) {
+        if (
+            $href === $path
+            && ((null !== $requestPage && $requestPage->id === $page->id) || ('forward' === $page->type && $requestPage->id === $page->jumpTo))
+        ) {
             $extra['isActive'] = true;
-            $extra['isTrail']  = false;
+            $extra['isTrail'] = false;
 
             $item->setCurrent(true);
         } else {
             $extra['isActive'] = false;
-            $extra['isTrail']  = $trail;
+            $extra['isTrail'] = $trail;
         }
 
         $extra['class'] = trim($page->cssClass);
