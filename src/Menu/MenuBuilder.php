@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Richardhj\ContaoKnpMenuBundle\Menu;
 
-use Contao\CoreBundle\Event\MenuEvent;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\Environment;
@@ -23,6 +22,7 @@ use Contao\StringUtil;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuItem;
+use Richardhj\ContaoKnpMenuBundle\Event\FrontendMenuEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -130,7 +130,7 @@ class MenuBuilder
             $root->addChild($item);
         }
 
-        $menuEvent = new MenuEvent($this->factory, $root);
+        $menuEvent = new FrontendMenuEvent($this->factory, $root);
         $this->dispatcher->dispatch($menuEvent);
 
         return $root;
