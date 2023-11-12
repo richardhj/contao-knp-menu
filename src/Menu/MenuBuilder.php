@@ -13,7 +13,10 @@ declare(strict_types=1);
 namespace Richardhj\ContaoKnpMenuBundle\Menu;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Routing\Page\PageRegistry;
+use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Database;
+use Contao\Date;
 use Contao\Environment;
 use Contao\FrontendUser;
 use Contao\Model\Collection;
@@ -28,17 +31,21 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MenuBuilder
 {
-    private FactoryInterface $factory;
-    private RequestStack $requestStack;
-    private ContaoFramework $framework;
+    private FactoryInterface         $factory;
+    private RequestStack             $requestStack;
+    private ContaoFramework          $framework;
     private EventDispatcherInterface $dispatcher;
+    private PageRegistry             $pageRegistry;
+    private TokenChecker             $tokenChecker;
 
-    public function __construct(FactoryInterface $factory, RequestStack $requestStack, ContaoFramework $framework, EventDispatcherInterface $dispatcher)
+    public function __construct(FactoryInterface $factory, RequestStack $requestStack, ContaoFramework $framework, EventDispatcherInterface $dispatcher, PageRegistry $pageRegistry, TokenChecker $tokenChecker)
     {
         $this->factory = $factory;
         $this->requestStack = $requestStack;
         $this->framework = $framework;
         $this->dispatcher = $dispatcher;
+        $this->pageRegistry = $pageRegistry;
+        $this->tokenChecker = $tokenChecker;
     }
 
     public function getMenu(ItemInterface $root, int $pid, $level = 1, $host = null, array $options = []): ItemInterface
@@ -139,7 +146,20 @@ class MenuBuilder
     private function getPages(int $pid, array $options): ?Collection
     {
         if ('customnav' !== $options['type']) {
-            return PageModel::findPublishedSubpagesWithoutGuestsByPid($pid, $options['showHidden']);
+            $time = Date::floorToMinute();
+            $beUserLoggedIn = $this->tokenChecker->isPreviewMode();
+            $unroutableTypes = $this->pageRegistry->getUnroutableTypes();
+
+            $arrPages = Database::getInstance()->prepare("SELECT p1.id, EXISTS(SELECT * FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type NOT IN ('" . implode("', '", $unroutableTypes) . "')" . (!$options['showHidden'] ? " AND p2.hide=0" : "") . (!$beUserLoggedIn ? " AND p2.published=1 AND (p2.start='' OR p2.start<=$time) AND (p2.stop='' OR p2.stop>$time)" : "") . ") AS hasSubpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type NOT IN ('" . implode("', '", $unroutableTypes) . "')" . (!$options['showHidden'] ? " AND p1.hide=0" : "") . (!$beUserLoggedIn ? " AND p1.published=1 AND (p1.start='' OR p1.start<=$time) AND (p1.stop='' OR p1.stop>$time)" : "") . " ORDER BY p1.sorting")
+                ->execute($pid)
+                ->fetchAllAssoc();
+
+            if (\count($arrPages) < 1)
+            {
+                return null;
+            }
+
+            return PageModel::findMultipleByIds(array_map(static function ($row) { return $row['id']; }, $arrPages));
         }
 
         $ids = StringUtil::deserialize($options['pages'], true);

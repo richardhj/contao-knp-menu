@@ -5,4 +5,10 @@ services:
       - { name: knp_menu.provider }
 
   Richardhj\ContaoKnpMenuBundle\Menu\MenuBuilder:
-    arguments: ['@Knp\Menu\FactoryInterface', '@request_stack', '@contao.framework', '@event_dispatcher']
+    arguments:
+     - '@Knp\Menu\FactoryInterface'
+     - '@request_stack'
+     - '@contao.framework'
+     - '@event_dispatcher'
+     - "@contao.routing.page_registry"
+     - "@contao.security.token_checker"
