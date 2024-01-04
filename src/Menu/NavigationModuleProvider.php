@@ -52,20 +52,20 @@ class NavigationModuleProvider implements MenuProviderInterface
         $options = array_merge($row, $options);
 
         // Set the trail and level
-        if ((!$fromDatabase || $options['defineRoot']) && $options['rootPage'] > 0) {
+        if ((!$fromDatabase || ($options['defineRoot'] ?? false)) && ($options['rootPage'] ?? 0) > 0) {
             $trail = [$options['rootPage']];
             $level = 0;
         } elseif (null === $currentPage) {
             throw new \RuntimeException('Current request does not have a page model. Please define the root page in the navigation module or pass the root page as option, i.e., knp_menu_get(\'contao\', { rootPage: 1 })');
         } else {
             $trail = $currentPage->trail;
-            $level = max($options['levelOffset'], 0);
+            $level = max($options['levelOffset'] ?? 0, 0);
         }
 
         // Overwrite the domain and language if the reference page belongs to a different root page (see #3765)
         if (
-            (!$fromDatabase || $options['defineRoot'])
-            && $options['rootPage'] > 0
+            (!$fromDatabase || ($options['defineRoot'] ?? false))
+            && ($options['rootPage'] ?? 0) > 0
             && (null !== $rootPage = PageModel::findWithDetails($options['rootPage']))
             && $rootPage->rootId !== $currentPage->rootId
             && $rootPage->domain
