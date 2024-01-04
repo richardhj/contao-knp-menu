@@ -4,8 +4,8 @@
 
 Provides Contao navigation modules as instances of [KnpMenu](https://github.com/KnpLabs/KnpMenuBundle).
 
-This extension is stable and supported from Contao >=4.9 and will be integrated into the Contao Core at some time, see https://github.com/contao/contao/pull/3838.
-
+This extension is stable and supported from Contao >=4.9 and will be integrated into the Contao Core at some time,
+see https://github.com/contao/contao/pull/3838.
 
 ## Install
 
@@ -17,13 +17,9 @@ $ composer require richardhj/contao-knp-menu
 
 ## Usage
 
-### Create a navigation module
+### Retrieve a navigation module by its alias
 
-Create a navigation module as you normally do and define a menu alias.
-
-### Retrieve a navigation module
-
-You can retrieve a module by its alias:
+For any navigation module in the Contao backend, you can define an alias. You can now retrieve this navigation by its alias:
 
 ```twig
 {% set menu = knp_menu_get('main_navigation') %}
@@ -35,6 +31,14 @@ You can also override some settings in the navigation module:
 {% set menu = knp_menu_get('main_navigation', [], { 'showHidden': true, 'showProtected': true }) %}
 ```
 
+### Use a default navigation
+
+You don't necessarily need to create a navigation module. Just use the special key `'contao'` and configure it with the
+third parameter where necessary.
+
+```twig
+{% set menu = knp_menu_get('contao', [], { 'defineRoot': 1 }) %}
+```
 
 ### Render a menu within a twig template
 

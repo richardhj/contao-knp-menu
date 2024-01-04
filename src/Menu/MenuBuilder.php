@@ -31,12 +31,12 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MenuBuilder
 {
-    private FactoryInterface         $factory;
-    private RequestStack             $requestStack;
-    private ContaoFramework          $framework;
+    private FactoryInterface $factory;
+    private RequestStack $requestStack;
+    private ContaoFramework $framework;
     private EventDispatcherInterface $dispatcher;
-    private PageRegistry             $pageRegistry;
-    private TokenChecker             $tokenChecker;
+    private PageRegistry $pageRegistry;
+    private TokenChecker $tokenChecker;
 
     public function __construct(FactoryInterface $factory, RequestStack $requestStack, ContaoFramework $framework, EventDispatcherInterface $dispatcher, PageRegistry $pageRegistry, TokenChecker $tokenChecker)
     {
@@ -150,12 +150,11 @@ class MenuBuilder
             $beUserLoggedIn = $this->tokenChecker->isPreviewMode();
             $unroutableTypes = $this->pageRegistry->getUnroutableTypes();
 
-            $arrPages = Database::getInstance()->prepare("SELECT p1.*, EXISTS(SELECT * FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type NOT IN ('" . implode("', '", $unroutableTypes) . "')" . (!$options['showHidden'] ? " AND p2.hide=0" : "") . (!$beUserLoggedIn ? " AND p2.published=1 AND (p2.start='' OR p2.start<=$time) AND (p2.stop='' OR p2.stop>$time)" : "") . ") AS subpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type NOT IN ('" . implode("', '", $unroutableTypes) . "')" . (!$options['showHidden'] ? " AND p1.hide=0" : "") . (!$beUserLoggedIn ? " AND p1.published=1 AND (p1.start='' OR p1.start<=$time) AND (p1.stop='' OR p1.stop>$time)" : "") . " ORDER BY p1.sorting")
+            $arrPages = Database::getInstance()->prepare("SELECT p1.*, EXISTS(SELECT * FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type NOT IN ('".implode("', '", $unroutableTypes)."')".(!$options['showHidden'] ? ' AND p2.hide=0' : '').(!$beUserLoggedIn ? " AND p2.published=1 AND (p2.start='' OR p2.start<=$time) AND (p2.stop='' OR p2.stop>$time)" : '').") AS subpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type NOT IN ('".implode("', '", $unroutableTypes)."')".(!$options['showHidden'] ? ' AND p1.hide=0' : '').(!$beUserLoggedIn ? " AND p1.published=1 AND (p1.start='' OR p1.start<=$time) AND (p1.stop='' OR p1.stop>$time)" : '').' ORDER BY p1.sorting')
                 ->execute($pid)
             ;
 
-            if ($arrPages->numRows < 1)
-            {
+            if ($arrPages->numRows < 1) {
                 return null;
             }
 

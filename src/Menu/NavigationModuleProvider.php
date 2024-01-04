@@ -37,15 +37,11 @@ class NavigationModuleProvider implements MenuProviderInterface
 
     public function get($name, array $options = []): ItemInterface
     {
+        $fromDatabase = 'contao' !== $name;
+        $row = $this->getNavigationRow($name);
+
         $request = $this->requestStack->getCurrentRequest();
-        $moduleAdapter = $this->framework->getAdapter(ModuleModel::class);
         $pageAdapter = $this->framework->getAdapter(PageModel::class);
-
-        /** @var ModuleModel $module */
-        if (null === $module = $moduleAdapter->findBy('menuAlias', $name)) {
-            throw new \InvalidArgumentException(sprintf('The menu "%s" is not defined.', $name));
-        }
-
         $currentPage = null !== $request ? $request->attributes->get('pageModel') : null;
 
         if (is_numeric($currentPage)) {
@@ -53,22 +49,22 @@ class NavigationModuleProvider implements MenuProviderInterface
         }
 
         $menu = $this->factory->createItem('root');
-        $options = array_merge($module->row(), $options);
+        $options = array_merge($row, $options);
 
         // Set the trail and level
-        if ($options['defineRoot'] && $options['rootPage'] > 0) {
+        if ((!$fromDatabase || $options['defineRoot']) && $options['rootPage'] > 0) {
             $trail = [$options['rootPage']];
             $level = 0;
         } elseif (null === $currentPage) {
-            throw new \RuntimeException('Current request does not have a page model. Please define the root page in the navigation module.');
+            throw new \RuntimeException('Current request does not have a page model. Please define the root page in the navigation module or pass the root page as option, i.e., knp_menu_get(\'contao\', { rootPage: 1 })');
         } else {
             $trail = $currentPage->trail;
-            $level = $options['levelOffset'] > 0 ? $options['levelOffset'] : 0;
+            $level = max($options['levelOffset'], 0);
         }
 
         // Overwrite the domain and language if the reference page belongs to a different root page (see #3765)
         if (
-            $options['defineRoot']
+            (!$fromDatabase || $options['defineRoot'])
             && $options['rootPage'] > 0
             && (null !== $rootPage = PageModel::findWithDetails($options['rootPage']))
             && $rootPage->rootId !== $currentPage->rootId
@@ -83,9 +79,29 @@ class NavigationModuleProvider implements MenuProviderInterface
 
     public function has($name, array $options = []): bool
     {
+        if ('contao' === $name) {
+            return true;
+        }
+
         $adapter = $this->framework->getAdapter(ModuleModel::class);
         $module = $adapter->findBy('menuAlias', $name);
 
         return null !== $module;
+    }
+
+    private function getNavigationRow(string $name): array
+    {
+        if ('contao' === $name) {
+            return [];
+        }
+
+        $moduleAdapter = $this->framework->getAdapter(ModuleModel::class);
+
+        /** @var ModuleModel $module */
+        if (null !== $module = $moduleAdapter->findBy('menuAlias', $name)) {
+            return $module->row();
+        }
+
+        throw new \InvalidArgumentException(sprintf('The menu "%s" is not defined.', $name));
     }
 }
