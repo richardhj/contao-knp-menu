@@ -50,7 +50,7 @@ class MenuBuilder
 
     public function getMenu(ItemInterface $root, int $pid, $level = 1, $host = null, array $options = []): ItemInterface
     {
-        if (empty($options) || null === ($pages = $this->getPages($pid, $options))) {
+        if (null === ($pages = $this->getPages($pid, $options))) {
             return $root;
         }
 
@@ -81,7 +81,7 @@ class MenuBuilder
 
             $_groups = StringUtil::deserialize($page->groups, true);
 
-            if (!$options['showProtected'] && ($page->protected && !\count(array_intersect($_groups, $groups)))) {
+            if (!($options['showProtected'] ?? false) && ($page->protected && !\count(array_intersect($_groups, $groups)))) {
                 continue;
             }
 
@@ -93,9 +93,9 @@ class MenuBuilder
                 $item->setDisplayChildren(false);
 
                 if (
-                    !$options['showLevel'] || $options['showLevel'] >= $level ||
+                    !($options['showLevel'] ?? 0) || ($options['showLevel'] ?? 0) >= $level ||
                     (
-                        !$options['hardLimit'] && ($requestPage->id === $page->id || \in_array($requestPage->id, $childRecords, true))
+                        !($options['hardLimit'] ?? 0) && ($requestPage->id === $page->id || \in_array($requestPage->id, $childRecords, true))
                     )
                 ) {
                     $item->setDisplayChildren(true);
@@ -145,12 +145,12 @@ class MenuBuilder
 
     private function getPages(int $pid, array $options): ?Collection
     {
-        if ('customnav' !== $options['type']) {
+        if ('customnav' !== ($options['type'] ?? '')) {
             $time = Date::floorToMinute();
             $beUserLoggedIn = $this->tokenChecker->isPreviewMode();
             $unroutableTypes = $this->pageRegistry->getUnroutableTypes();
 
-            $arrPages = Database::getInstance()->prepare("SELECT p1.*, EXISTS(SELECT * FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type NOT IN ('".implode("', '", $unroutableTypes)."')".(!$options['showHidden'] ? ' AND p2.hide=0' : '').(!$beUserLoggedIn ? " AND p2.published=1 AND (p2.start='' OR p2.start<=$time) AND (p2.stop='' OR p2.stop>$time)" : '').") AS subpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type NOT IN ('".implode("', '", $unroutableTypes)."')".(!$options['showHidden'] ? ' AND p1.hide=0' : '').(!$beUserLoggedIn ? " AND p1.published=1 AND (p1.start='' OR p1.start<=$time) AND (p1.stop='' OR p1.stop>$time)" : '').' ORDER BY p1.sorting')
+            $arrPages = Database::getInstance()->prepare("SELECT p1.*, EXISTS(SELECT * FROM tl_page p2 WHERE p2.pid=p1.id AND p2.type!='root' AND p2.type NOT IN ('".implode("', '", $unroutableTypes)."')".(!($options['showHidden'] ?? false) ? ' AND p2.hide=0' : '').(!$beUserLoggedIn ? " AND p2.published=1 AND (p2.start='' OR p2.start<=$time) AND (p2.stop='' OR p2.stop>$time)" : '').") AS subpages FROM tl_page p1 WHERE p1.pid=? AND p1.type!='root' AND p1.type NOT IN ('".implode("', '", $unroutableTypes)."')".(!($options['showHidden'] ?? false) ? ' AND p1.hide=0' : '').(!$beUserLoggedIn ? " AND p1.published=1 AND (p1.start='' OR p1.start<=$time) AND (p1.stop='' OR p1.stop>$time)" : '').' ORDER BY p1.sorting')
                 ->execute($pid)
             ;
 
@@ -161,7 +161,7 @@ class MenuBuilder
             return Collection::createFromDbResult($arrPages, 'tl_page');
         }
 
-        $ids = StringUtil::deserialize($options['pages'], true);
+        $ids = StringUtil::deserialize(($options['pages'] ?? ''), true);
 
         if (method_exists(PageModel::class, 'findPublishedRegularWithoutGuestsByIds')) {
             return PageModel::findPublishedRegularWithoutGuestsByIds($ids, ['includeRoot' => true]);
