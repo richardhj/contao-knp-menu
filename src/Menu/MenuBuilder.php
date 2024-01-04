@@ -163,11 +163,11 @@ class MenuBuilder
 
         $ids = StringUtil::deserialize($options['pages'], true);
 
-        if (method_exists(PageModel::class, 'findPublishedRegularByIds')) {
-            return PageModel::findPublishedRegularByIds($ids, ['includeRoot' => true]);
-        } else {
+        if (method_exists(PageModel::class, 'findPublishedRegularWithoutGuestsByIds')) {
             return PageModel::findPublishedRegularWithoutGuestsByIds($ids, ['includeRoot' => true]);
         }
+
+        return PageModel::findPublishedRegularByIds($ids, ['includeRoot' => true]);
     }
 
     private function populateMenuItem(MenuItem $item, ?PageModel $requestPage, PageModel $page, $href): MenuItem
