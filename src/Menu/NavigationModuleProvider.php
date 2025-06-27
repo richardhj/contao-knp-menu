@@ -58,7 +58,7 @@ class NavigationModuleProvider implements MenuProviderInterface
         } elseif (null === $currentPage) {
             throw new \RuntimeException('Current request does not have a page model. Please define the root page in the navigation module or pass the root page as option, i.e., knp_menu_get(\'contao\', { rootPage: 1 })');
         } else {
-            $trail = $currentPage->trail;
+            $trail = array_values(array_filter($currentPage->trail));
             $level = max($options['levelOffset'] ?? 0, 0);
         }
 
