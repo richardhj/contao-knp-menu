@@ -48,7 +48,7 @@ class NavigationModuleProvider implements MenuProviderInterface
             $currentPage = $pageAdapter->findByPk($currentPage);
         }
 
-        $menu = $this->factory->createItem('root');
+        $menu = $this->factory->createItem($name);
         $options = array_merge($row, $options);
 
         // Set the trail and level
