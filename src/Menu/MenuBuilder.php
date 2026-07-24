@@ -27,6 +27,7 @@ use Knp\Menu\ItemInterface;
 use Knp\Menu\MenuItem;
 use Richardhj\ContaoKnpMenuBundle\Event\FrontendMenuEvent;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MenuBuilder
@@ -71,6 +72,7 @@ class MenuBuilder
             $groups = $user->groups;
         }
 
+        /** @var PageModel $page */
         foreach ($pages as $page) {
             $item = new MenuItem($page->title, $this->factory);
 
@@ -129,7 +131,13 @@ class MenuBuilder
                     break;
 
                 default:
-                    $href = $page->getFrontendUrl();
+                    try {
+                        $href = $page->getFrontendUrl();
+                    } catch (InvalidParameterException $e) {
+                        // Skip pages that require an item (e.g. requireItem) but
+                        // cannot build a URL without one, as the core does.
+                        continue 2;
+                    }
                     break;
             }
 
