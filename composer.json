@@ -16,12 +16,12 @@
   },
   "require": {
     "php": ">=7.4",
-   
-    "contao/core-bundle": "^4.9 || ^5.0",
-    "knplabs/knp-menu-bundle": "^2.2. || ^3.0",
 
-    "symfony/config": "^4.4 || ^5.0 || ^6.0 || ^7.0",
-    "symfony/http-kernel": "^4.4 || ^5.0 || ^6.0 || ^7.0"
+    "contao/core-bundle": "^4.9 || ^5.0 || ^6.0",
+    "knplabs/knp-menu-bundle": "^2.2 || ^3.0",
+
+    "symfony/config": "^4.4 || ^5.0 || ^6.0 || ^7.0 || ^8.0",
+    "symfony/http-kernel": "^4.4 || ^5.0 || ^6.0 || ^7.0 || ^8.0"
   },
   "require-dev": {
     "contao/easy-coding-standard": "^4.0",
