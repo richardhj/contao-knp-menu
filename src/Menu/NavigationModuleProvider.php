@@ -74,6 +74,14 @@ class NavigationModuleProvider implements MenuProviderInterface
             $host = $rootPage->domain;
         }
 
+        // A custom navigation always returns its configured page selection
+        // regardless of the parent, so recursing into subpages would process
+        // the same selection again and loop. Disable it by default (opt-out
+        // via knp_skip_subpages: false).
+        if ('customnav' === ($options['type'] ?? '') && !isset($options['knp_skip_subpages'])) {
+            $options['knp_skip_subpages'] = true;
+        }
+
         return $this->builder->getMenu($menu, (int) $trail[$level], 1, $host ?? null, $options);
     }
 

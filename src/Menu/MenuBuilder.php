@@ -88,7 +88,7 @@ class MenuBuilder
             }
 
             // Check whether there will be subpages
-            if ($page->subpages > 0) {
+            if (!($options['knp_skip_subpages'] ?? false) && $page->subpages > 0) {
                 ++$level;
                 $childRecords = Database::getInstance()->getChildRecords($page->id, 'tl_page');
 
