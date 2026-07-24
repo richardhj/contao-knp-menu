@@ -182,7 +182,7 @@ class MenuBuilder
 
         // Active page
         if (
-            $href === $path
+            ltrim($href, '/') === ltrim($path, '/')
             && ((null !== $requestPage && $requestPage->id === $page->id) || ('forward' === $page->type && $requestPage->id === $page->jumpTo))
         ) {
             $extra['isActive'] = true;
